@@ -1,4 +1,17 @@
 
-img {
+#list-item {
+	/* display: inline; */
+}
+
+#img {
 	width: 500px;
+	background: #999;
+}
+
+img {
+	width: 100%;
+}
+
+#list-item {
+	margin-top: 5px;
 }
