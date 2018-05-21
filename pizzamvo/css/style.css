@@ -1,0 +1,38 @@
+
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+body {
+    background: #f00;
+    margin: 2em;
+}
+
+.controls {
+    text-align: center;
+}
+
+#pizza-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.pizza {
+    display: inline-block;
+    width: 100px;
+    line-height: 50px;
+    border-radius: 50%;
+    background: #ff0;
+    text-align: center;
+    margin: .5em;
+}
+
+.remove-pizza {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 3px;
+    padding: .25em;
+}
