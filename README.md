@@ -1,2 +1,4 @@
 # CatClicker
-JavaScript design battern
+JavaScript 设计模式
+
+
