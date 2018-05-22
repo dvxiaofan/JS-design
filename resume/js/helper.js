@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 
 This file contains all of the code running in the background that makes resumeBuilder.js possible. We call these helper functions because they support your code in this course.
@@ -12,6 +13,9 @@ Cameron Pittman
 These are HTML strings. As part of the course, you'll be using JavaScript functions
 replace the %data% placeholder text you see in them.
 */
+=======
+
+>>>>>>> resume
 var HTMLheaderName = '<h1 id="name">%data%</h1>';
 var HTMLheaderRole = '<span>%data%</span><hr>';
 
@@ -87,6 +91,10 @@ function logClicks(x,y) {
 
 $(document).click(function(loc) {
   // your code goes here!
+<<<<<<< HEAD
+=======
+  
+>>>>>>> resume
 });
 
 
@@ -116,7 +124,10 @@ function initializeMap() {
   */
   map = new google.maps.Map(document.querySelector('#map'), mapOptions);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> resume
   /*
   locationFinder() returns an array of every location string from the JSONs
   written for bio, education, and work.
@@ -178,6 +189,10 @@ function initializeMap() {
     // hmmmm, I wonder what this is about...
     google.maps.event.addListener(marker, 'click', function() {
       // your code goes here!
+<<<<<<< HEAD
+=======
+      console.log(map);
+>>>>>>> resume
     });
 
     // this is where the pin actually gets added to the map.
