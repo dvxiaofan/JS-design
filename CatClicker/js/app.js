@@ -2,6 +2,7 @@
 /* === model === */
 var model = {
 	currtenCat: null,
+	showAdminView: false,
 	cats: [
 		{
 			name: 'cat01',
@@ -28,6 +29,53 @@ var model = {
 };
 
 /* === View === */
+
+var adminView = {
+	init: function () {
+		this.adminView = document.getElementById('admin-view');
+		this.adminBtn = document.getElementById('btn-admin');
+		this.cancelBtn = document.getElementById('btn-cancel');
+		this.saveBtn = document.getElementById('btn-save');
+
+		var inputNameElem = document.getElementById('input-name');
+		var inputCountElem = document.getElementById('input-count');
+		var inputSrcElem = document.getElementById('input-src');
+
+		this.adminBtn.addEventListener('click', function () {
+			controller.showAdminView();
+		});
+
+		this.cancelBtn.addEventListener('click', function () {
+			controller.hideAdminView();
+		});
+
+		this.saveBtn.addEventListener('click', function () {
+
+			const inputName = inputNameElem.value,
+				inputCount = inputCountElem.value,
+				inputSrc = inputSrcElem.value;
+
+			var cat = {
+				name: inputName,
+				clickCount: inputCount,
+				imgSrc: inputSrc
+			}
+			
+			controller.setCurrentCat(cat);
+			catView.render();
+
+			controller.hideAdminView();
+		});
+	},
+
+	render: function () {
+		if (model.showAdminView == true) {
+			this.adminView.style.display = '';
+		}else {
+			this.adminView.style.display = 'none';
+		}	
+	}
+};
 
 var catListView = {
 	init: function () {
@@ -93,6 +141,7 @@ var controller = {
 
 		catListView.init();
 		catView.init();
+		adminView.init();
 	},
 
 	getCurrentCat: function () {
@@ -110,6 +159,16 @@ var controller = {
 	incrementCounter: function () {
 		model.currtenCat.clickCount++;
 		catView.render();
+	},
+
+	showAdminView: function () {
+		model.showAdminView = true;
+		adminView.render();
+	},
+
+	hideAdminView: function () {
+		model.showAdminView = false;
+		adminView.render();
 	}
 };
 
