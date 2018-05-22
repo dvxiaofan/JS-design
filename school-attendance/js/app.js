@@ -1,84 +1,130 @@
-/* STUDENTS IGNORE THIS FUNCTION
- * All this does is create an initial
- * attendance record if one is not found
- * within localStorage.
- */
-(function() {
-    if (!localStorage.attendance) {
-        console.log('Creating attendance records...');
-        function getRandom() {
-            return (Math.random() >= 0.5);
-        }
+(function () {
 
-        var nameColumns = $('tbody .name-col'),
-            attendance = {};
+    let helpers = (() => {
+        return {
+            getRandom: () => {
+                return (Math.random() >= 0.5);
+            },
 
-        nameColumns.each(function() {
-            var name = this.innerText;
-            attendance[name] = [];
-
-            for (var i = 0; i <= 11; i++) {
-                attendance[name].push(getRandom());
-            }
-        });
-
-        localStorage.attendance = JSON.stringify(attendance);
-    }
-}());
-
-
-/* STUDENT APPLICATION */
-$(function() {
-    var attendance = JSON.parse(localStorage.attendance),
-        $allMissed = $('tbody .missed-col'),
-        $allCheckboxes = $('tbody input');
-
-    // Count a student's missed days
-    function countMissing() {
-        $allMissed.each(function() {
-            var studentRow = $(this).parent('tr'),
-                dayChecks = $(studentRow).children('td').children('input'),
-                numMissed = 0;
-
-            dayChecks.each(function() {
-                if (!$(this).prop('checked')) {
-                    numMissed++;
+            fillLocalStorageWithStudents: (students, lessonNum) => {
+                for (const student of students) {
+                    for (let i = 0; i < lessonNum; i++) {
+                        student.attendance.push(helpers.getRandom());
+                    }
                 }
+                localStorage.students = JSON.stringify(students);
+                return students;
+            }
+        }
+    })();
+
+    let model = (() => {
+        let students = [
+            {id: 1, name: 'Slappy the Frog', attendance: []},
+            {id: 2, name: 'Lilly the Lizard', attendance: []},
+            {id: 3, name: 'Paulrus the Walrus', attendance: []},
+            {id: 4, name: 'Gregory the Goat', attendance: []},
+            {id: 5, name: 'Adam the Anaconda', attendance: []}
+        ];
+
+        const lessonNum = 12;
+
+        return {
+            getStudents: () => {
+                return localStorage.students ? JSON.parse(localStorage.students) : (helpers.fillLocalStorageWithStudents(students, lessonNum));
+            },
+
+            saveStudents: (students) => {
+                localStorage.students = JSON.stringify(students);
+            }
+        };
+    })();
+
+    let view = (() => {
+        let headerTemplate = (students) => {
+            let lessonNums = students[0].attendance.reduce((total, nextItem, index) => {
+                return total + `<th>${index + 1}</th>`;
+            }, '');
+
+            return `<thead>
+                        <tr>
+                            <th class="name-col">Student Name</th>
+                            ${lessonNums}
+                            <th class="miss-clo">Days Missed-col</th>
+                        </tr>
+                    </thead>`;
+        };
+
+        let rowTemplate = (student) => {
+            let attendCheckboxes = student.attendance.reduce((total, nextItem, index) => {
+                let value = nextItem ? 'checked' : '';
+                return total + `<td class="attend-col"><input type="checkbox"${value}></td>`
+            }, '');
+            let missedLessons = student.attendance.filter((item) => {return !item});
+
+            return `<tr class="student" id="${student.id}">
+                <td class="name-col">${student.name}</td>
+                ${attendCheckboxes}
+                <td class="missed-col">${missedLessons.length}</td>
+            </tr>`;
+        };
+
+        let bodyTemplare = (students) => {
+            let studentRows = students.map((student) => {
+                return rowTemplate(student);
             });
+            return `<tbody>
+                    ${studentRows.join('')}
+                </tbody>`;
+        };
 
-            $(this).text(numMissed);
-        });
-    }
+        return {
+            render: (students) => {
+                let entireHtml = headerTemplate(students) + bodyTemplare(students);
+                let table = document.getElementById('students-table');
 
-    // Check boxes, based on attendace records
-    $.each(attendance, function(name, days) {
-        var studentRow = $('tbody .name-col:contains("' + name + '")').parent('tr'),
-            dayChecks = $(studentRow).children('.attend-col').children('input');
+                table.innerHTML = entireHtml;
 
-        dayChecks.each(function(i) {
-            $(this).prop('checked', days[i]);
-        });
-    });
+                let checkboxes = table.getElementsByTagName('input');
+                for (const checkbox of checkboxes) {
+                    checkbox.addEventListener('click', controller.recalculateRow);
+                }
+            }
+        }; 
+    })();
 
-    // When a checkbox is clicked, update localStorage
-    $allCheckboxes.on('click', function() {
-        var studentRows = $('tbody .student'),
-            newAttendance = {};
+    let controller = ( () => {
+        let students = model.getStudents();
 
-        studentRows.each(function() {
-            var name = $(this).children('.name-col').text(),
-                $allCheckboxes = $(this).children('td').children('input');
+        return {
+            init: () => {
+                view.render(students);
+            },
 
-            newAttendance[name] = [];
+            recalculateRow: function () {
+                let parentRow = $(this).parent().parent();
+                let studentId = +parentRow.prop('id');
+                let missedElem = parentRow.find('td.missed-col');
+                let selectedRowCheckboxes = parentRow.find('td input');
+                let missedValue = 0;
 
-            $allCheckboxes.each(function() {
-                newAttendance[name].push($(this).prop('checked'));
-            });
-        });
+                selectedRowCheckboxes.each((index, elem) => {
+                    let checked = $(elem).prop('checked');
 
-        countMissing();
-        localStorage.attendance = JSON.stringify(newAttendance);
-    });
+                    if (!checked) {
+                        missedValue++;
+                    }
+                    let student = students.filter((st) => {
+                        return st.id === studentId;
+                    })[0];
+                    student.attendance[index] = checked;
+                });
 
-    countMissing();
+                missedElem.text(missedValue);
+                model.saveStudents(students);
+            }
+        }
+    })();
+    controller.init();
 }());
+
