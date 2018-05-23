@@ -9,7 +9,11 @@
 </head>
 <body>
 
-	<div data-bind="with: currentCat()">
+	<ul data-bind="foreach: catList">
+		<li data-bind="text: name, click: $parent.setCat"></li>
+	</ul>
+
+	<div data-bind="with: currentCat">
 		<h2 class="cat-name" data-bind="text: name"></h2>
 		<h3 class="title" data-bind="text: title"></h3>
 		<div class="cat-count" data-bind="text: clickCount"></div>
@@ -17,8 +21,8 @@
 
 		<div>
 			<h3 class="cat-nickname">Nicknames:</h3>
-			<ul data-bind="foreach: nicknames">
-				<li data-bind="text: $data"></li>
+			<ul>
+				<li data-bind="text: nickname"></li>
 			</ul>
 		</div>
 	</div>

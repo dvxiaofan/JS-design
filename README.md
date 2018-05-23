@@ -1,4 +1,4 @@
-# CatClicker
-JavaScript 设计模式
+
+# JavaScript 设计模式
 
 
