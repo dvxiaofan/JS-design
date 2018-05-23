@@ -9,12 +9,10 @@
 </head>
 <body>
 
-	<ul id="cat-list"></ul>
-
-	<div id="cat">
-		<h2 id="cat-name"></h2>
-		<div id="cat-count"></div>
-		<img src="" alt="cute-cat" id="cat-img">
+	<div>
+		<h2 class="cat-name" data-bind="text: name"></h2>
+		<div class="cat-count" data-bind="text: clickCount"></div>
+		<img src="" alt="curt-cat" class="cat-img" data-bind="click: incrementCounter, attr: {src: imgSrc}">
 	</div>
 
 	<script src="https://cdn.bootcss.com/knockout/3.4.2/knockout-min.js"></script>
